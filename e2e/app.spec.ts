@@ -14,13 +14,13 @@ function dims(ascii: string) {
 }
 
 async function uploadSample(page: Page) {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByTestId("file-input").setInputFiles(SAMPLE);
   await expect(page.getByTestId("ascii-output")).toBeVisible();
 }
 
 test("rejects unsupported and oversized files with a clear message", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByTestId("file-input").setInputFiles({ name: "cat.gif", mimeType: "image/gif", buffer: Buffer.from("GIF89a") });
   await expect(page.getByRole("alert")).toContainText(".gif isn't supported");
 
@@ -48,7 +48,7 @@ test("file picker upload produces aligned ASCII art", async ({ page }) => {
 });
 
 test("drag and drop upload works", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   const bytes = readFileSync(SAMPLE).toString("base64");
   await page.evaluate(async (b64) => {
     const bin = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
@@ -64,7 +64,7 @@ test("drag and drop upload works", async ({ page }) => {
 });
 
 test("sample image, customization controls, and crop update the art live", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "Try the sample portrait" }).click();
   await expect(page.getByTestId("ascii-output")).toBeVisible();
   const initial = await asciiText(page);
@@ -191,7 +191,7 @@ test("animated README flow: preview, download, and snippet", async ({ page, cont
 });
 
 test("landing page shows a live README demo that draws itself", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   const portrait = page.getByTestId("mockup-portrait");
   await expect(portrait).toBeVisible();
   await expect.poll(() => portrait.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0);
@@ -267,6 +267,6 @@ test("layout: previews side by side on desktop, stacked on mobile", async ({ pag
     expect(art.x).toBeGreaterThan(photo.x + photo.width);
   }
   await page.screenshot({ path: `test-results/screens/${info.project.name}-workspace.png`, fullPage: true });
-  await page.goto("/");
+  await page.goto("./");
   await page.screenshot({ path: `test-results/screens/${info.project.name}-landing.png`, fullPage: true });
 });
